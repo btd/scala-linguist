@@ -208,8 +208,8 @@ override def extensions = ".fs" :: ".fsi" :: ".fsx" :: Nil
 "FORTRAN" -> new Language("FORTRAN") {
 override def langType = Type.Programming
 override def primaryExtension = ".f90"
-override def extensions = ".F" :: ".F90" :: ".f" :: ".f90" :: Nil
-},
+override def extensions = ".F" :: ".F77" :: ".F90" :: ".F95" :: ".F03" :: ".F08" :: ".FPP" :: ".f" :: ".f77" :: ".f90" :: ".f95" :: ".f03" :: ".f08" :: ".for" :: ".fpp" :: Nil
+}, 
 "Factor" -> new Language("Factor") {
 override def langType = Type.Programming
 override def extensions = ".factor" :: Nil
