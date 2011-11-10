@@ -10,7 +10,7 @@ class BlobHelper(val path: String, basePath: Option[String]) {
 	
 	private lazy val file = new File(path)
 	
-	lazy val data = lines.mkString
+	lazy val data = (new java.util.Scanner(file)).useDelimiter("\\Z").next
 	
 	lazy val size = file.length
 	
@@ -56,7 +56,7 @@ class BlobHelper(val path: String, basePath: Option[String]) {
 		case _ => true
 	})
 
-	lazy val lines: List[String] = scala.io.Source.fromFile(file).getLines.toList
+	lazy val lines: Seq[String] = if(viewable_?) data.split("\n") else Seq() //maybe better to use List?
 
 	lazy val loc = lines.size
 
