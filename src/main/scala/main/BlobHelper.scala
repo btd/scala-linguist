@@ -15,11 +15,13 @@ class BlobHelper(val path: String, basePath: Option[String]) {
 		case Some(bp) => path.substring(bp.length + 1)
 	}
 
-	val source =  scala.io.Source.fromFile(file)
-
-	println(source.getLines.toList)
 	
-	lazy val data = lines.mkString("\n")
+	lazy val data:String = {
+		val scanner = (new java.util.Scanner(file)).useDelimiter("""\z""")
+		val builder = new scala.collection.mutable.StringBuilder
+		while(scanner.hasNext) builder.append(scanner.next)
+		builder.toString
+	}
 	
 	lazy val size = file.length
 	
@@ -33,7 +35,7 @@ class BlobHelper(val path: String, basePath: Option[String]) {
 
 	def large_? = size > MEGABYTE
 
-	def viewable_? = !large_?
+	def viewable_? = !image_? && !large_?
 
 	private val vendoredRegExp = List(
 		"""cache/"""r,
@@ -65,13 +67,13 @@ class BlobHelper(val path: String, basePath: Option[String]) {
 		case _ => true
 	})
 
-	lazy val lines: List[String] = scala.io.Source.fromFile(file).getLines.toList
+	lazy val lines: List[String] = if(viewable_?) data.split("\n", -1).toList else Nil
 
 	lazy val loc = lines.size
 
 	lazy val sloc = lines.filter(s => !s.trim.isEmpty).size
 
-	lazy val average_line_length = lines.foldLeft(0)((all, l) => all + l.length)/data.length
+	lazy val average_line_length = lines.foldLeft(0)((all, l) => all + l.length)/loc
 
 	lazy val generated_? = xcode_project_file_? || visual_studio_project_file_? || generated_coffeescript_? || minified_javascript_? || generated_net_docfile_? 		
 
@@ -81,43 +83,45 @@ class BlobHelper(val path: String, basePath: Option[String]) {
     
 	private def minified_javascript_? = extname == ".js" && average_line_length > 100
 
-	private def generated_coffeescript_? = {
-		if(extname == ".js" && lines(0) == "(function() {" && 
+	 def generated_coffeescript_? = {
+		extname == ".js" && lines(0) == "(function() {" && 
 			lines(loc - 2) == "}).call(this);" && 
-			lines(loc - 1) == "") {
-			
-			lines.foldLeft(0)((score, line) => {
-				score + ("""(_fn|_i|_len|_ref|_results)"""r).findAllIn(line).size + 3 * ("""(__bind|__extends|__hasProp|__indexOf|__slice)"""r).findAllIn(line).size
-				}) >= 3
-			
-		} else false
+			lines(loc - 1) == "" &&			
+			lines.foldLeft(0)((score, line) => if ("""var """.r.findAllIn(line).size == 0) 
+					score + 
+					("""_fn|_i|_len|_ref|_results"""r).findAllIn(line).size + 
+					3 * ("""__bind|__extends|__hasProp|__indexOf|__slice"""r).findAllIn(line).size
+				else 0
+				) >= 3
 	}
 
 	private def generated_net_docfile_? = extname.toLowerCase == ".xml" && loc > 3 && lines(1).contains("<doc>") && lines(2).contains("<assembly>") && lines(loc - 2).contains("</doc>")
 
 	private val guessers = List(
 			".h" -> { () =>
-				if (lines.exists(l => l.matches("^@(interface|property|private|public|end)"))) Language("Objective-C")
-				else if (lines.exists(l => l.matches("""^class |^\s+(public|protected|private):"""))) Language("C++")
+				if (lines.exists(l => """^@(interface|property|private|public|end)""".r.findAllIn(l).size != 0)) 
+					Language("Objective-C")
+				else if (lines.exists(l => """^class |^\s+(public|protected|private):""".r.findAllIn(l).size != 0)) 
+					Language("C++")
 				else Language("C")
 			},
 			".m" -> { () =>
-				if (lines.exists(l => l.matches("^#import|@(interface|implementation|property|synthesize|end)"))) Language("Objective-C")
-				else if (lines.head.matches("^function ")) Language("Matlab")
-				else if (lines.exists(l => l.matches("^%"))) Language("Matlab")
+				if (lines.exists(l => """^#import|@(interface|implementation|property|synthesize|end)""".r.findAllIn(l).size != 0)) Language("Objective-C")
+				else if ("^function ".r.findAllIn(lines.head).size != 0) Language("Matlab")
+				else if (lines.exists(l => "^%".r.findAllIn(l).size != 0)) Language("Matlab")
 				else Language("Objective-C")				
 			},
 			".pl" -> { () =>
 				if (shebang_script == "perl") Language("Perl")
-				else if (lines.exists(l => l.matches(":-"))) Language("Prolog")
+				else if (lines.exists(l => ":-".r.findAllIn(l).size != 0)) Language("Prolog")
 				else Language("Perl")		
 			},
 			".r" -> { () =>
-				if (lines.exists(l => l.matches("""(rebol|(:\s+func|make\s+object!|^\s*context)\s*\[)"""))) Language("Rebol")
+				if (lines.exists(l => """(rebol|(:\s+func|make\s+object!|^\s*context)\s*\[)""".r.findAllIn(l).size != 0)) Language("Rebol")
 				else Language("R")
 			},
 			".gsp" -> { () =>
-				if (lines.exists(l => l.matches("""<%|<%@|\$\{|<%|<g:|<meta name="layout"|<r:"""))) Language("Groovy Server Pages")
+				if (lines.exists(l => """<%|<%@|\$\{|<%|<g:|<meta name="layout"|<r:""".r.findAllIn(l).size != 0)) Language("Groovy Server Pages")
 				else Language("Gosu")				
 			}
 		).toMap
@@ -130,10 +134,10 @@ class BlobHelper(val path: String, basePath: Option[String]) {
     private def guess_language: Option[Language] = disambiguate_extension_language orElse pathname.language orElse first_line_language orElse shebang_language
 
     private def first_line_language = 
-    	if(viewable_? && lines.head.matches("""^<\?php""")) Language("PHP")
+    	if(viewable_? && """^<\?php""".r.findAllIn(lines.head).size != 0) Language("PHP")
     	else None
 
-    private def shebang_script: String = 
+    def shebang_script: String = 
     	if(viewable_?) {
     		val line = lines.head.replaceAll("#! ", "#!")
     		val tokens = line.split(" ")
@@ -142,8 +146,9 @@ class BlobHelper(val path: String, basePath: Option[String]) {
     		var script = if(pieces.size > 1) pieces(pieces.length - 1) else pieces(0).replaceAll("#!", "")
 
     		script = if(script == "env") tokens(1) else script
-    		script.split("""((?:\d+\.?)+)""")(0)
+    		script = script.split("""((?:\d+\.?)+)""")(0)
 
+    		script
     	} else ""
 
     private def shebang_language = Language(shebang_script)

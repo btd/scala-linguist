@@ -26,6 +26,14 @@ class Language(val name: String) {
   def group: Option[String] = None
   
   def popular = false
+
+  override def toString = name
+
+  override def equals(that: Any) : Boolean = {
+    that.isInstanceOf[Language] && (this.name == that.asInstanceOf[Language].name)
+  }
+
+  override def hashCode = name.hashCode
 }
 
 object Language {
