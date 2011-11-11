@@ -4,19 +4,21 @@ import main._
 
 
 class LanguageSpec extends Specification {
-	"fileNameIndex get language by filename" in {
-		Language.fileNameIndex("CMakeLists.txt") must_== "CMake"
-	}
-	
-	"ambiguous_? said true if file extension is more than one lang" in {
+	"Ambiguous extensions" in {
 		Language.ambiguous_?(".h") must beTrue
+
+		Language.ambiguous_?(".m") must beTrue
+
+		Language.ambiguous_?(".pl") must beTrue
+
+	    Language.ambiguous_?(".r") must beTrue
 	}
-	
-	"extensionIndex get language by extension" in {
-		Language.extensionIndex(".rb") must_== "Ruby"
-	}
-	
-	"extensionIndex doesnt contains ambiguous extensions" in {
-		Language.extensionIndex.get(".h") must_== None
+
+	val pathName1 = new Pathname("dir"+ java.io.File.separator+"test.rb")
+	val pathName2 = new Pathname("dir"+ java.io.File.separator+"Rakefile")
+
+	"Finding by pathname" in {
+		Language.findByFilename(pathName1) must_== Language("Ruby")
+		Language.findByFilename(pathName2) must_== Language("Ruby")
 	}
 }

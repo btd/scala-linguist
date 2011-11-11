@@ -32,7 +32,7 @@ object Language {
 
 	
 	
-	val languages = List(
+	private val languages = List(
 "ASP" -> new Language("ASP") {
 override def langType = Type.Programming
 override def aliases = "aspx" :: "aspx-vb" :: name.toLowerCase :: Nil
@@ -672,25 +672,27 @@ override def extensions = ".rst" :: ".rest" :: Nil
 
   def apply(name: String) = languages.get(name)
 
-	val fileNameIndex = languages.flatMap(p => p._2.filenames.map(fn => fn -> p._1)).toMap
+	private val fileNameIndex = languages.flatMap(p => p._2.filenames.map(fn => fn -> p._1)).toMap
 	
-	val overrides = languages.flatMap(p => p._2.overrides.map(o => o -> p._1)).toMap
+	private val overrides = languages.flatMap(p => p._2.overrides.map(o => o -> p._1)).toMap
 	
 	def ambiguous_?(extension: String) = overrides.get(extension) match {
 		case None => false
 		case _ => true
 	}
 	
-	val extensionIndex = languages.flatMap(p => p._2.extensions.filter( ! ambiguous_?(_)).map(e => e -> p._1)).toMap
+	private val extensionIndex = languages.flatMap(p => p._2.extensions.filter( ! ambiguous_?(_)).map(e => e -> p._1)).toMap
 	
 	
-	def findByFilename(path: Pathname) = (fileNameIndex.get(path.basename) match {
-		case None => extensionIndex.get(path.extname)
-		case o => o
-	}) match {
-   case Some(s) => apply(s)
-   case _ => None 
-  }
+	def findByFilename(path: Pathname) = 
+    (fileNameIndex.get(path.basename) match {
+  		case None => extensionIndex.get(path.extname)
+  		case o => o
+  	}) match {
+     case Some(s) => apply(s)
+     case _ => None 
+    }
+
 	
 
 }

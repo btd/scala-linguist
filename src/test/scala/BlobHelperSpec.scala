@@ -4,27 +4,46 @@ import main._
 import java.io.File
 
 class BlobHelperSpec extends Specification {
-	val blobHelper1 = new BlobHelper("sub" + File.separator + "pasth" + File.separator + "dir.scala", Some("sub"))
-	val blobHelper2 = new BlobHelper("sub" + File.separator + "pasth" + File.separator + "dir.scala", None)
+	val / = File.separator
 
-	val blobHelperImage = new BlobHelper("dir.jpg", None)
-
-	val blobHelperVendor = new BlobHelper("vendor/dir.jpg", None)
-
-	"name of blobHelper is splitted if basePath setted" in {
-		blobHelper1.name must_== "pasth" + File.separator + "dir.scala"
-	}
 	
-	"name of blobHelper is not splitted if basePath setted" in {
-		blobHelper2.name must_== blobHelper2.path
+
+	def fixtures_path = (new File(getClass.getResource("/fixtures").toURI)).getAbsolutePath
+
+	def blob(name:String) = new BlobHelper(fixtures_path + / + name, Some(fixtures_path))
+
+	"name extracted correctly" in {
+		"foo.rb" must_== blob("foo.rb").name
 	}
 
-	"Image are recognized by extension" in {
-		blobHelperImage.image_? must beTrue
+	"pathname extracted correctly" in {
+		new Pathname("foo.rb") must_== blob("foo.rb").pathname
 	}
 
-	"vendored names" in {
-		blobHelperVendor.vendored_?  must beTrue
-		blobHelperImage.vendored_? must beFalse
+	"data is correct" in {
+		"module Foo\nend\n" must_== blob("foo.rb").data
 	}
+
+	/*
+	def test_data
+    assert_equal "module Foo\nend\n", blob("foo.rb").data
+  end
+
+  def test_lines
+    assert_equal ["module Foo", "end", ""], blob("foo.rb").lines
+  end
+
+  def test_size
+    assert_equal 15, blob("foo.rb").size
+  end
+
+  def test_loc
+    assert_equal 3, blob("foo.rb").loc
+  end
+
+  def test_sloc
+    assert_equal 2, blob("foo.rb").sloc
+  end
+	*/
+	
 }

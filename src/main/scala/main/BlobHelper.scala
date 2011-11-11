@@ -3,14 +3,23 @@ package main
 import java.io.File
 
 class BlobHelper(val path: String, basePath: Option[String]) {
+	require(basePath match {
+		case None => true
+		case Some(bp) => path.startsWith(bp)
+	}, "path doesn't started from base path")
+
+	private lazy val file = new File(path)
+
 	val name = basePath match {
 		case None => path
-		case Some(bp) => path.replaceAll(bp + "\\" + File.separator, "")
+		case Some(bp) => path.substring(bp.length + 1)
 	}
+
+	val source =  scala.io.Source.fromFile(file)
+
+	println(source.getLines.toList)
 	
-	private lazy val file = new File(path)
-	
-	lazy val data = lines.mkString
+	lazy val data = lines.mkString("\n")
 	
 	lazy val size = file.length
 	
@@ -151,5 +160,7 @@ class BlobHelper(val path: String, basePath: Option[String]) {
         false
       else
         true
+
+
       
 }
