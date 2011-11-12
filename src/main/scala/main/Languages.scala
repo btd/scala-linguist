@@ -678,7 +678,9 @@ override def aliases = "rst" :: name.toLowerCase :: Nil
 override def extensions = ".rst" :: ".rest" :: Nil
 }).toMap
 
-  def apply(name: String) = languages.get(name)
+  def apply(name: String) = languages.get(name) orElse aliasesIndex.get(name)
+
+  val aliasesIndex = languages.flatMap(p => p._2.aliases.map(a => a.capitalize -> p._2) ).toMap
 
 	private val fileNameIndex = languages.flatMap(p => p._2.filenames.map(fn => fn -> p._1)).toMap
 	

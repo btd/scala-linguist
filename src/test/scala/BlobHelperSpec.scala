@@ -308,4 +308,22 @@ class BlobHelperSpec extends Specification {
 		"racket" must_== blob("script.rkt").shebang_script
 		"" must_== blob("foo.rb").shebang_script
 	}
+
+	"shebang script language recognized correctly" in {
+		Language("Shell") must_== blob("script.sh").shebang_language
+		Language("Shell") must_== blob("script.bash").shebang_language
+		Language("Shell") must_== blob("script.zsh").shebang_language
+		Language("Perl") must_== blob("script.pl").shebang_language
+		Language("Ruby") must_== blob("script.rb").shebang_language
+		Language("Python") must_== blob("script.py").shebang_language
+		Language("JavaScript") must_== blob("script.js").shebang_language
+		Language("Groovy") must_== blob("script.groovy").shebang_language
+		Language("Ruby") must_== blob("script.mrb").shebang_language
+		Language("Ruby") must_== blob("script.rake").shebang_language
+		Language("Nu") must_== blob("script.nu").shebang_language
+		Language("Scala") must_== blob("script.scala").shebang_language
+		Language("Racket") must_== blob("script.rkt").shebang_language
+		None must_== blob("script.foo").shebang_language
+		None must_== blob("foo.rb").shebang_language
+	}
 }

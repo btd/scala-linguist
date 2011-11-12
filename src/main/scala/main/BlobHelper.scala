@@ -139,19 +139,28 @@ class BlobHelper(val path: String, basePath: Option[String]) {
 
     def shebang_script: String = 
     	if(viewable_?) {
-    		val line = lines.head.replaceAll("#! ", "#!")
-    		val tokens = line.split(" ")
-    		val pieces = tokens(0).split("/")
+    		val shebang1 = """^#!\s*(/(\w+))+.*$""".r
+			val shebang2 = """^#!\s*(/(\w+))+\s+(\w+).*$""".r
+			val exec = """\s*exec\s+(\w+).+"\$0"\s+"\$@".*""".r
 
-    		var script = if(pieces.size > 1) pieces(pieces.length - 1) else pieces(0).replaceAll("#!", "")
-
-    		script = if(script == "env") tokens(1) else script
-    		script = script.split("""((?:\d+\.?)+)""")(0)
-
-    		script
+		
+    		(lines.head match {
+    			case shebang2(_, bin, arg) if (bin == "env") => arg
+    			case shebang1(_, bin) if (bin == "sh")=> {
+    				(lines.take(5).filter(l => l match {
+    					case exec(s) => true
+    					case _ => false
+    				})) match {
+    					case Seq(exec(executable), rest @ _*) => executable
+    					case _ => "sh"
+    				}
+    			}
+    			case shebang1(_, bin) => bin
+    			case _ => ""
+    		}).split("""\d+""")(0)
     	} else ""
 
-    private def shebang_language = Language(shebang_script)
+  def shebang_language = Language(shebang_script.capitalize)
 
 
   def indexable_? =
