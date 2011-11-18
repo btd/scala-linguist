@@ -183,6 +183,7 @@ class BlobHelperSpec extends Specification {
 		Language("Ruby") must_==        blob("foo.rb").language
 		Language("Ruby") must_==        blob("script.rb").language
 		Language("Ruby") must_==        blob("wrong_shebang.rb").language
+		Language("Arduino") must_==     blob("hello.ino").language
 		None must_== blob("octocat.png").language
 
 		// .pl disambiguation

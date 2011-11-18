@@ -65,6 +65,10 @@ override def extensions = ".applescript" :: ".scpt" :: Nil
 override def langType = Type.Programming
 override def extensions = ".arc" :: Nil
 },
+"Arduino" -> new Language("Arduino") {
+override def langType = Type.Programming
+override def extensions = ".ino" :: Nil
+},
 "Assembly" -> new Language("Assembly") {
 override def langType = Type.Programming
 override def aliases = "nasm" :: name.toLowerCase :: Nil
