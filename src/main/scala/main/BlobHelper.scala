@@ -1,29 +1,6 @@
 package main
 
-import java.io.File
-
-class BlobHelper(val path: String, basePath: Option[String]) {
-	require(basePath match {
-		case None => true
-		case Some(bp) => path.startsWith(bp)
-	}, "path doesn't started from base path")
-
-	private lazy val file = new File(path)
-
-	val name = basePath match {
-		case None => path
-		case Some(bp) => path.substring(bp.length + 1)
-	}
-
-	
-	lazy val data:String = {
-		val scanner = (new java.util.Scanner(file)).useDelimiter("""\z""")
-		val builder = new scala.collection.mutable.StringBuilder
-		while(scanner.hasNext) builder.append(scanner.next)
-		builder.toString
-	}
-	
-	lazy val size = file.length
+trait BlobHelper {this: FileBlob =>
 	
 	def pathname = new Pathname(name)
 	

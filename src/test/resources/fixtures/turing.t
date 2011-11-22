@@ -12,7 +12,7 @@ var n: int
 loop
     put "Please input an integer: " ..
     get n
-    exit when n &gt;= 0
+    exit when n >= 0
     put "Input must be a non-negative integer."
 end loop
 

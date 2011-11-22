@@ -10,7 +10,7 @@ class BlobHelperSpec extends Specification {
 
 	def fixtures_path = (new File(getClass.getResource("/fixtures").toURI)).getAbsolutePath
 
-	def blob(name:String) = new BlobHelper(fixtures_path + / + name, Some(fixtures_path))
+	def blob(name:String) = new MockBlob(fixtures_path + / + name, Some(fixtures_path))
 
 	"name extracted correctly" in {
 		"foo.rb" must_== blob("foo.rb").name
