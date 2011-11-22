@@ -620,6 +620,12 @@ override def extensions = ".txt" :: Nil
 override def langType = Type.Markup
 override def extensions = ".textile" :: Nil
 },
+"Turing" -> new Language("Turing") {
+override def langType = Type.Programming
+override def overrides = ".t" :: Nil
+override def primaryExtension = ".t"
+override def extensions = ".t" :: ".tu" :: Nil
+},
 "Twig" -> new Language("Twig") {
 override def langType = Type.Markup
 override def group = Some("PHP")

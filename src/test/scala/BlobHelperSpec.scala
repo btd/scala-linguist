@@ -201,6 +201,10 @@ class BlobHelperSpec extends Specification {
 		Language("R") must_==           blob("hello-r.R").language
 		Language("Rebol") must_==       blob("hello-rebol.r").language
 
+		// .t disambiguation
+		Language("Perl") must_==        blob("perl-test.t").language
+		Language("Turing") must_==      blob("turing.t").language
+
 		// ML
 		Language("OCaml") must_==       blob("Foo.ml").language
 		Language("Standard ML") must_== blob("Foo.sig").language

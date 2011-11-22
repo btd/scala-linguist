@@ -12,6 +12,8 @@ class LanguageSpec extends Specification {
 		Language.ambiguous_?(".pl") must beTrue
 
 	    Language.ambiguous_?(".r") must beTrue
+
+	    Language.ambiguous_?(".t") must beTrue
 	}
 
 	val pathName1 = new Pathname("dir"+ java.io.File.separator+"test.rb")

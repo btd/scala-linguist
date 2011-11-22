@@ -123,6 +123,19 @@ class BlobHelper(val path: String, basePath: Option[String]) {
 			".gsp" -> { () =>
 				if (lines.exists(l => """<%|<%@|\$\{|<%|<g:|<meta name="layout"|<r:""".r.findAllIn(l).size != 0)) Language("Groovy Server Pages")
 				else Language("Gosu")				
+			},
+			".t" -> { () => {
+				var score = 0
+				score += (if(lines.exists(l => ("""^% """.r.findAllIn(l).size != 0))) 1 else 0)
+				score += """ := """.r.findAllIn(data).size
+				score += """proc |procedure |fcn |function """.r.findAllIn(data).size
+				score += """var \w+: \w+""".r.findAllIn(data).size
+
+				if(lines.exists(l => """^(my )?(sub |\$|@|%)\w+""".r.findAllIn(l).size != 0)) score = 0
+
+				if (score >= 3) Language("Turing")
+				else Language("Perl")
+				}
 			}
 		).toMap
 
