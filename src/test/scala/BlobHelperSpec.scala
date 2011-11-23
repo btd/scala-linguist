@@ -48,9 +48,22 @@ class BlobHelperSpec extends Specification {
 		blob("README").viewable_? must beTrue
 		blob("foo.rb").viewable_?  must beTrue
 		blob("script.pl").viewable_?  must beTrue
-		blob("linguist.gem").viewable_? must beTrue
-		//blob("octocat.ai").viewable_? must beFalse I cannot undestand binary file or not =(
+		blob("linguist.gem").viewable_? must beFalse
+		blob("octocat.ai").viewable_? must beFalse 
 		blob("octocat.png").viewable_? must beFalse
+	}
+
+	"binary_?" in {
+		
+		blob("foo.png").binary_? must beTrue
+		blob("git.exe").binary_? must beTrue
+		blob("git.deb").binary_? must beTrue
+		blob("linguist.gem").binary_? must beTrue
+		blob("octocat.ai").binary_? must beTrue
+
+		blob("README").binary_? must beFalse
+		blob("foo.rb").binary_?  must beFalse
+		blob("script.pl").binary_?  must beFalse
 	}
 
 	"generated_?" in {

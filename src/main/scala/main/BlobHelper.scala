@@ -12,7 +12,27 @@ trait BlobHelper {this: FileBlob =>
 
 	def large_? = size > MEGABYTE
 
-	def viewable_? = !image_? && !large_?
+	def viewable_? = !large_? && !binary_? && !image_?
+
+	//private val BINARY_CHECK_LIMIT = 2048 // for me seems this is enough
+
+	private val LEVEL_CONTROL = 20 //% of control chars in data
+
+	def binary_? = {
+		if(!data.isEmpty && data.length == size) {//if scanner cannot recognize end correctly seems something wrong with file - IT IS BINARY =^_^= !!!
+			var score = 0
+			var offset = 0
+			var strLen = data.length
+			while (offset < strLen) {
+			  val curChar = data.codePointAt(offset)
+			  offset += Character.charCount(curChar)
+			  
+			  score += (if(Character.getType(curChar) == Character.CONTROL) 1 else 0)
+			}
+
+			((score.asInstanceOf[Float] / offset.asInstanceOf[Float]) * 100f) > LEVEL_CONTROL
+		} else true
+	}
 
 	private val vendoredRegExp = List(
 		"""cache/"""r,
@@ -58,10 +78,10 @@ trait BlobHelper {this: FileBlob =>
 
     private def visual_studio_project_file_? = List(".csproj", ".dbproj", ".fsproj", ".pyproj", ".rbproj", ".vbproj", ".vcxproj", ".wixproj", ".resx", ".sln", ".vdproj", ".isproj").contains(extname)
     
-	private def minified_javascript_? = extname == ".js" && average_line_length > 100
+	private def minified_javascript_? = extname == ".js" && loc > 0 && average_line_length > 100
 
-	 def generated_coffeescript_? = {
-		extname == ".js" && lines(0) == "(function() {" && 
+	def generated_coffeescript_? = {
+		extname == ".js" && loc >= 2 && lines(0) == "(function() {" && 
 			lines(loc - 2) == "}).call(this);" && 
 			lines(loc - 1) == "" &&			
 			lines.foldLeft(0)((score, line) => if ("""var """.r.findAllIn(line).size == 0) 
