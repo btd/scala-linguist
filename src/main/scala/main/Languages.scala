@@ -375,7 +375,7 @@ override def popular = true
 },
 "Makefile" -> new Language("Makefile") {
 override def extensions = ".mak" :: Nil
-override def filenames = "Makefile" :: Nil
+override def filenames = "makefile" :: "GNUmakefile" :: "Makefile" :: Nil
 },
 "Mako" -> new Language("Mako") {
 override def extensions = ".mao" :: Nil
@@ -550,6 +550,12 @@ override def searchable_? = false
 override def extensions = ".sql" :: Nil
 override def popular = true
 },
+"Sage" -> new Language("Sage") {
+override def langType = Type.Programming
+override def group = Some("Python")
+override def primaryExtension = ".sage"
+override def extensions = ".sage" :: Nil
+},
 "Sass" -> new Language("Sass") {
 override def langType = Type.Markup
 override def group = Some("CSS")
@@ -658,7 +664,7 @@ override def extensions = ".bas" :: ".frx" :: ".vb" :: ".vba" :: ".vbs" :: Nil
 "XML" -> new Language("XML") {
 override def langType = Type.Markup
 override def primaryExtension = ".xml"
-override def extensions = ".glade" :: ".kml" :: ".mxml" :: ".plist" :: ".rdf" :: ".rss" :: ".svg" :: ".wsdl" :: ".wxi" :: ".wxl" :: ".wxs" :: ".xaml" :: ".xml" :: ".xsd" :: ".xsl" :: ".xul" :: Nil
+override def extensions = ".glade" :: ".kml" :: ".mxml" :: ".plist" :: ".rdf" :: ".rss" :: ".svg" :: ".wsdl" :: ".wxi" :: ".wxl" :: ".wxs" :: ".xaml" :: ".xlf" :: ".xliff" :: ".xml" :: ".xsd" :: ".xsl" :: ".xul" :: Nil
 override def filenames = ".classpath" :: ".project" :: Nil
 override def popular = true
 },

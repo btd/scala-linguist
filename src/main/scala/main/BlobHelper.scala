@@ -57,7 +57,12 @@ trait BlobHelper {this: FileBlob =>
 		"""(^|/)tiny_mce([^.]*)\.js$"""r,
 		"""^fabfile\.py$"""r,
 		"""^waf$"""r,
-		"""(^|/)Sparkle/"""r)
+		"""(^|/)Sparkle/"""r,
+		"""-vsdoc\.js$"""r,
+		"""(^|/)[Mm]icrosoft([Mm]vc)?([Aa]jax|[Vv]alidation)(\.debug)?\.js$"""r,
+		"""^[Pp]ackages/"""r,
+		"""(^|/)jquery([^.]*)\.validate(\.min)?\.js$"""r,
+		"""(^|/)MathJax/"""r)
 
 	def vendored_? = vendoredRegExp.exists(_.findFirstIn(name) match {
 		case None => false
