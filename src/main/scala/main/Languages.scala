@@ -10,6 +10,8 @@ class Language(val name: String) {
 
   
   def langType = Type.Default
+
+  def lexer = "plain"
   
   def aliases: List[String] = name.toLowerCase :: Nil
   
@@ -46,12 +48,14 @@ override def langType = Type.Programming
 override def aliases = "aspx" :: "aspx-vb" :: name.toLowerCase :: Nil
 override def primaryExtension = ".asp"
 override def extensions = ".asax" :: ".ascx" :: ".ashx" :: ".asmx" :: ".asp" :: ".aspx" :: ".axd" :: Nil
+override def lexer = "xml"
 },
 "ActionScript" -> new Language("ActionScript") {
 override def langType = Type.Programming
 override def aliases = "as3" :: name.toLowerCase :: Nil
 override def extensions = ".as" :: Nil
 override def popular = true
+override def lexer = "as3"
 },
 "Ada" -> new Language("Ada") {
 override def langType = Type.Programming
@@ -105,12 +109,14 @@ override def overrides = ".h" :: Nil
 override def primaryExtension = ".c"
 override def extensions = ".c" :: ".h" :: Nil
 override def popular = true
+override def lexer = "c"
 },
 "C#" -> new Language("C#") {
 override def langType = Type.Programming
 override def aliases = "csharp" :: name.toLowerCase :: Nil
 override def extensions = ".cs" :: Nil
 override def popular = true
+override def lexer = "csharp"
 },
 "C++" -> new Language("C++") {
 override def langType = Type.Programming
@@ -118,6 +124,7 @@ override def aliases = "cpp" :: name.toLowerCase :: Nil
 override def primaryExtension = ".cpp"
 override def extensions = ".c++" :: ".cc" :: ".cpp" :: ".cu" :: ".cxx" :: ".h" :: ".h++" :: ".hh" :: ".hpp" :: ".hxx" :: ".tcc" :: Nil
 override def popular = true
+override def lexer = "cpp"
 },
 "C-ObjDump" -> new Language("C-ObjDump") {
 override def langType = Type.Data
@@ -130,6 +137,7 @@ override def filenames = "CMakeLists.txt" :: Nil
 "CSS" -> new Language("CSS") {
 override def extensions = ".css" :: Nil
 override def popular = true
+override def lexer = "css"
 },
 "ChucK" -> new Language("ChucK") {
 override def extensions = ".ck" :: Nil
@@ -150,6 +158,7 @@ override def langType = Type.Programming
 override def aliases = "cfm" :: name.toLowerCase :: Nil
 override def primaryExtension = ".cfm"
 override def extensions = ".cfc" :: ".cfm" :: Nil
+override def lexer = "coldfusion"
 },
 "Common Lisp" -> new Language("Common Lisp") {
 override def langType = Type.Programming
@@ -187,10 +196,12 @@ override def extensions = ".darcspatch" :: ".dpatch" :: Nil
 override def langType = Type.Programming
 override def primaryExtension = ".pas"
 override def extensions = ".dpr" :: ".pas" :: Nil
+override def lexer = "delphi"
 },
 "Diff" -> new Language("Diff") {
 override def extensions = ".diff" :: ".patch" :: Nil
 override def popular = true
+override def lexer = "diff"
 },
 "Dylan" -> new Language("Dylan") {
 override def langType = Type.Programming
@@ -212,6 +223,7 @@ override def langType = Type.Programming
 override def primaryExtension = ".erl"
 override def extensions = ".erl" :: ".hrl" :: Nil
 override def popular = true
+override def lexer = "erl"
 },
 "F#" -> new Language("F#") {
 override def langType = Type.Programming
@@ -270,6 +282,7 @@ override def extensions = ".1" :: ".2" :: ".3" :: ".4" :: ".5" :: ".6" :: ".7" :
 override def langType = Type.Programming
 override def primaryExtension = ".groovy"
 override def extensions = ".gradle" :: ".groovy" :: Nil
+override def lexer = "groovy"
 },
 "Groovy Server Pages" -> new Language("Groovy Server Pages") {
 override def group = Some("Groovy")
@@ -282,6 +295,7 @@ override def langType = Type.Markup
 override def primaryExtension = ".html"
 override def extensions = ".htm" :: ".html" :: ".xhtml" :: ".xslt" :: Nil
 override def popular = true
+override def lexer = "html"
 },
 "HTML+Django" -> new Language("HTML+Django") {
 override def langType = Type.Markup
@@ -335,11 +349,13 @@ override def langType = Type.Data
 override def group = Some("JavaScript")
 override def searchable_? = false
 override def extensions = ".json" :: Nil
+override def lexer = "js"
 },
 "Java" -> new Language("Java") {
 override def langType = Type.Programming
 override def extensions = ".java" :: ".pde" :: Nil
 override def popular = true
+override def lexer = "java"
 },
 "Java Server Pages" -> new Language("Java Server Pages") {
 override def group = Some("Java")
@@ -353,6 +369,7 @@ override def primaryExtension = ".js"
 override def extensions = ".bones" :: ".jake" :: ".js" :: ".jsm" :: ".jss" :: ".jsx" :: ".pac" :: ".sjs" :: ".ssjs" :: Nil
 override def filenames = "Jakefile" :: Nil
 override def popular = true
+override def lexer = "js"
 },
 "LLVM" -> new Language("LLVM") {
 override def extensions = ".ll" :: Nil
@@ -374,7 +391,7 @@ override def extensions = ".lua" :: ".nse" :: Nil
 override def popular = true
 },
 "Makefile" -> new Language("Makefile") {
-override def extensions = ".mak" :: Nil
+override def extensions = ".mak" :: ".mk" :: Nil
 override def filenames = "makefile" :: "GNUmakefile" :: "Makefile" :: Nil
 },
 "Mako" -> new Language("Mako") {
@@ -455,6 +472,7 @@ override def extensions = ".cl" :: Nil
 override def langType = Type.Programming
 override def extensions = ".aw" :: ".ctp" :: ".php" :: ".php3" :: ".php4" :: ".php5" :: ".phpt" :: Nil
 override def popular = true
+override def lexer = "php"
 },
 "Parrot" -> new Language("Parrot") {
 override def langType = Type.Programming
@@ -478,6 +496,7 @@ override def overrides = ".pl" :: Nil
 override def primaryExtension = ".pl"
 override def extensions = ".PL" :: ".perl" :: ".ph" :: ".pl" :: ".pm" :: ".pod" :: ".psgi" :: ".t" :: Nil
 override def popular = true
+override def lexer = "perl"
 },
 "Prolog" -> new Language("Prolog") {
 override def langType = Type.Programming
@@ -492,6 +511,7 @@ override def langType = Type.Programming
 override def primaryExtension = ".py"
 override def extensions = ".py" :: ".pyw" :: ".wsgi" :: Nil
 override def popular = true
+override def lexer = "python"
 },
 "Python traceback" -> new Language("Python traceback") {
 override def langType = Type.Data
@@ -533,6 +553,7 @@ override def primaryExtension = ".rb"
 override def extensions = ".builder" :: ".gemspec" :: ".god" :: ".irbrc" :: ".rake" :: ".rb" :: ".rbuild" :: ".rbw" :: ".rbx" :: ".ru" :: ".thor" :: ".watchr" :: Nil
 override def filenames = "Capfile" :: "Rakefile" :: "Thorfile" :: "Gemfile" :: "Guardfile" :: "Vagrantfile" :: Nil
 override def popular = true
+override def lexer = "ruby"
 },
 "Rust" -> new Language("Rust") {
 override def langType = Type.Programming
@@ -549,6 +570,7 @@ override def langType = Type.Data
 override def searchable_? = false
 override def extensions = ".sql" :: Nil
 override def popular = true
+override def lexer = "sql"
 },
 "Sage" -> new Language("Sage") {
 override def langType = Type.Programming
@@ -566,6 +588,7 @@ override def langType = Type.Programming
 override def primaryExtension = ".scala"
 override def extensions = ".sbt" :: ".scala" :: Nil
 override def popular = true
+override def lexer = "scala"
 },
 "Scheme" -> new Language("Scheme") {
 override def langType = Type.Programming
@@ -584,6 +607,7 @@ override def primaryExtension = ".sh"
 override def extensions = ".bash" :: ".sh" :: ".zsh" :: Nil
 override def filenames = ".bash_profile" :: ".bashrc" :: ".profile" :: ".zlogin" :: ".zsh" :: ".zshrc" :: Nil
 override def popular = true
+override def lexer = "shell"
 },
 "Smalltalk" -> new Language("Smalltalk") {
 override def langType = Type.Programming
@@ -611,6 +635,7 @@ override def langType = Type.Programming
 override def group = Some("Shell")
 override def primaryExtension = ".tcsh"
 override def extensions = ".csh" :: ".tcsh" :: Nil
+override def lexer = "shell"
 },
 "TeX" -> new Language("TeX") {
 override def langType = Type.Markup
@@ -660,6 +685,7 @@ override def filenames = ".gvimrc" :: ".vimrc" :: "vimrc" :: "gvimrc" :: Nil
 override def langType = Type.Programming
 override def primaryExtension = ".vb"
 override def extensions = ".bas" :: ".frx" :: ".vb" :: ".vba" :: ".vbs" :: Nil
+override def lexer = "vbnet"
 },
 "XML" -> new Language("XML") {
 override def langType = Type.Markup
@@ -667,6 +693,7 @@ override def primaryExtension = ".xml"
 override def extensions = ".glade" :: ".kml" :: ".mxml" :: ".plist" :: ".rdf" :: ".rss" :: ".svg" :: ".wsdl" :: ".wxi" :: ".wxl" :: ".wxs" :: ".xaml" :: ".xlf" :: ".xliff" :: ".xml" :: ".xsd" :: ".xsl" :: ".xul" :: Nil
 override def filenames = ".classpath" :: ".project" :: Nil
 override def popular = true
+override def lexer = "xml"
 },
 "XQuery" -> new Language("XQuery") {
 override def langType = Type.Programming
@@ -680,6 +707,7 @@ override def langType = Type.Markup
 override def primaryExtension = ".yml"
 override def extensions = ".yaml" :: ".yml" :: Nil
 override def filenames = ".gemrc" :: Nil
+override def lexer = "yaml"
 },
 "mupad" -> new Language("mupad") {
 override def extensions = ".mu" :: Nil

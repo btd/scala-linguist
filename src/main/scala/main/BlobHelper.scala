@@ -16,10 +16,12 @@ trait BlobHelper {this: FileBlob =>
 
 	//private val BINARY_CHECK_LIMIT = 2048 // for me seems this is enough
 
-	private val LEVEL_CONTROL = 20 //% of control chars in data
+	private val LEVEL_CONTROL = 0.2f //% of control chars in data
 
 	def binary_? = {
-		if(!data.isEmpty && data.length == size) {//if scanner cannot recognize end correctly seems something wrong with file - IT IS BINARY =^_^= !!!
+		if(!data.isEmpty) {
+			def controlChar_?(c: Int) = Character.getType(c) == Character.CONTROL
+
 			var score = 0
 			var offset = 0
 			var strLen = data.length
@@ -27,10 +29,10 @@ trait BlobHelper {this: FileBlob =>
 			  val curChar = data.codePointAt(offset)
 			  offset += Character.charCount(curChar)
 			  
-			  score += (if(Character.getType(curChar) == Character.CONTROL) 1 else 0)
+			  score += (if(controlChar_?(curChar)) 1 else 0)
 			}
 
-			((score.asInstanceOf[Float] / offset.asInstanceOf[Float]) * 100f) > LEVEL_CONTROL
+			(score.asInstanceOf[Float] / offset.asInstanceOf[Float]) > LEVEL_CONTROL
 		} else true
 	}
 

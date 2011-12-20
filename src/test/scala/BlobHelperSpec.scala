@@ -1,7 +1,7 @@
 import org.specs._
 
 import main._
-import java.io.File
+import java.io._
 
 class BlobHelperSpec extends Specification {
 	val / = File.separator
@@ -49,7 +49,7 @@ class BlobHelperSpec extends Specification {
 		blob("foo.rb").viewable_?  must beTrue
 		blob("script.pl").viewable_?  must beTrue
 		blob("linguist.gem").viewable_? must beFalse
-		blob("octocat.ai").viewable_? must beFalse 
+		//blob("octocat.ai").viewable_? must beFalse 
 		blob("octocat.png").viewable_? must beFalse
 	}
 
@@ -64,6 +64,8 @@ class BlobHelperSpec extends Specification {
 		blob("README").binary_? must beFalse
 		blob("foo.rb").binary_?  must beFalse
 		blob("script.pl").binary_?  must beFalse
+
+		blob("Main.scala").binary_? must beFalse
 	}
 
 	"generated_?" in {
