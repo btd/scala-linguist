@@ -11,7 +11,7 @@ class MockBlob(val path: String, val basePath: Option[String]) extends FileBlob 
 	}
 
 	lazy val data = {
-		dataFromBytes(fileToByteArray(file))
+		StringEncoder.encode(fileToByteArray(file))
 			
 	}
 
