@@ -1,4 +1,4 @@
-package main
+package org.lunatool.linguist
 
 trait BlobHelper {this: FileBlob =>
 	
@@ -12,28 +12,29 @@ trait BlobHelper {this: FileBlob =>
 
 	def large_? = size > MEGABYTE
 
-	def viewable_? = !large_? && !binary_? && !image_?
+	def viewable_? = !data.isEmpty && !large_? && !binary_? && !image_?
 
 	//private val BINARY_CHECK_LIMIT = 2048 // for me seems this is enough
 
-	private val LEVEL_CONTROL = 0.2f //% of control chars in data
+	private val LEVEL_CONTROL = 0.4f //% of control chars in data
 
-	def binary_? = {
-		if(!data.isEmpty) {
+	def binary_? = data match {
+		case Some(d) => {
 			def controlChar_?(c: Int) = Character.getType(c) == Character.CONTROL
 
-			var score = 0
-			var offset = 0
-			var strLen = data.length
-			while (offset < strLen) {
-			  val curChar = data.codePointAt(offset)
-			  offset += Character.charCount(curChar)
-			  
-			  score += (if(controlChar_?(curChar)) 1 else 0)
-			}
+		 	var score = 0
+		 	var offset = 0
+		 	var strLen = d.length
+		 	while (offset < strLen) {
+		 	  val curChar = d.codePointAt(offset)
+		 	  offset += Character.charCount(curChar)
+		  
+		 	  score += (if(controlChar_?(curChar)) 1 else 0)
+		 	}
 
-			(score.asInstanceOf[Float] / offset.asInstanceOf[Float]) > LEVEL_CONTROL
-		} else true
+		 	(score.asInstanceOf[Float] / offset.asInstanceOf[Float]) > LEVEL_CONTROL
+		}
+		case _ => true
 	}
 
 	private val vendoredRegExp = List(
@@ -71,11 +72,11 @@ trait BlobHelper {this: FileBlob =>
 		case _ => true
 	})
 
-	lazy val lines: List[String] = if(viewable_?) data.split("\n", -1).toList else Nil
+	lazy val lines: List[String] = if(viewable_?) data.get.split("\n", -1).toList else Nil
 
 	lazy val loc = lines.size
 
-	lazy val sloc = lines.filter(s => !s.trim.isEmpty).size
+	lazy val sloc = lines.count(s => !s.trim.isEmpty)
 
 	lazy val average_line_length = lines.foldLeft(0)((all, l) => all + l.length)/loc
 
@@ -131,9 +132,9 @@ trait BlobHelper {this: FileBlob =>
 			".t" -> { () => {
 				var score = 0
 				score += (if(lines.exists(l => ("""^% """.r.findAllIn(l).size != 0))) 1 else 0)
-				score += """ := """.r.findAllIn(data).size
-				score += """proc |procedure |fcn |function """.r.findAllIn(data).size
-				score += """var \w+: \w+""".r.findAllIn(data).size
+				score += """ := """.r.findAllIn(data.get).size
+				score += """proc |procedure |fcn |function """.r.findAllIn(data.get).size
+				score += """var \w+: \w+""".r.findAllIn(data.get).size
 
 				if(lines.exists(l => """^(my )?(sub |\$|@|%)\w+""".r.findAllIn(l).size != 0)) score = 0
 

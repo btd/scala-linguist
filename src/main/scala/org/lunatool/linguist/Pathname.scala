@@ -1,4 +1,4 @@
-package main
+package org.lunatool.linguist
 
 class Pathname(val path: String) {
 	val basename = path.substring(path.lastIndexOf(java.io.File.separator) + 1)

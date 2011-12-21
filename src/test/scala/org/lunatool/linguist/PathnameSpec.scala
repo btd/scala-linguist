@@ -1,6 +1,7 @@
+package org.lunatool.linguist
+
 import org.specs._
 
-import main.{Pathname, Language}
 import java.io.File
 
 class PathnameSpec extends Specification {

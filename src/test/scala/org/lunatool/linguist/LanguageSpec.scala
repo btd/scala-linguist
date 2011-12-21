@@ -1,7 +1,6 @@
+package org.lunatool.linguist
+
 import org.specs._
-
-import main._
-
 
 class LanguageSpec extends Specification {
 	"Ambiguous extensions" in {

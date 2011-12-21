@@ -1,4 +1,4 @@
-package main
+package org.lunatool.linguist
 
 trait FileBlob {
 
@@ -15,7 +15,7 @@ trait FileBlob {
 
 	def name: String
 	
-	def data: String
+	def data: Option[String]
 		
 	def size: Long
 }
